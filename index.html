@@ -5,42 +5,44 @@
 <title>Adivina la frase</title>
 
 <style>
-body {
-  font-family: Arial;
-  background: linear-gradient(135deg,#667eea,#764ba2,#6dd5ed);
+
+body{
+  font-family:Arial;
+  background:linear-gradient(135deg,#667eea,#764ba2,#6dd5ed);
   color:white;
   text-align:center;
   padding:20px;
 }
 
-.contenedor {
+.contenedor{
   max-width:1100px;
   margin:auto;
 }
 
 /* FRASE */
-.frase {
+.frase{
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
+  align-items:center;
   gap:16px;
   margin:30px 0;
 }
 
-/* PALABRA (no se rompe) */
-.palabra {
+/* PALABRA */
+.palabra{
   display:inline-flex;
   gap:8px;
   white-space:nowrap;
 }
 
 /* ESPACIO ENTRE PALABRAS */
-.espacio {
+.espacio{
   width:30px;
 }
 
-/* LETRAS */
-.casilla {
+/* CASILLAS */
+.casilla{
   width:60px;
   height:70px;
   border-radius:14px;
@@ -52,24 +54,31 @@ body {
   font-size:28px;
   font-weight:bold;
   color:transparent;
+  transition:0.3s;
 }
 
-.visible {
+/* LETRA VISIBLE */
+.visible{
   color:white;
   background:orange;
 }
 
 /* CONTROLES */
-input, button {
+input, button{
   padding:10px;
   border-radius:10px;
   border:none;
   margin:5px;
+  font-size:16px;
 }
 
-button {
+button{
   cursor:pointer;
   font-weight:bold;
+}
+
+h1{
+  margin-bottom:20px;
 }
 
 </style>
@@ -98,41 +107,61 @@ button {
 let fraseSecreta="";
 
 function crearJuego(){
-  fraseSecreta="¿"+document.getElementById("entradaFrase").value.toUpperCase()+"?";
+
+  fraseSecreta=document.getElementById("entradaFrase").value.toUpperCase();
 
   let panel=document.getElementById("panelFrase");
   panel.innerHTML="";
 
+  // INTERROGACIÓN INICIAL SIEMPRE VISIBLE
+  let interrogacionInicio=document.createElement("div");
+  interrogacionInicio.className="casilla visible";
+  interrogacionInicio.innerText="¿";
+  panel.appendChild(interrogacionInicio);
+
   let palabras=fraseSecreta.split(" ");
 
-  palabras.forEach((palabra, indexPalabra)=>{
+  palabras.forEach((palabra,indexPalabra)=>{
 
-    // bloque palabra
+    // CONTENEDOR PALABRA
     let divPalabra=document.createElement("div");
     divPalabra.className="palabra";
 
     for(let letra of palabra){
+
       let div=document.createElement("div");
       div.className="casilla";
       div.innerText=letra;
+
       divPalabra.appendChild(div);
     }
 
     panel.appendChild(divPalabra);
 
-    // espacio visual entre palabras
+    // ESPACIO ENTRE PALABRAS
     if(indexPalabra < palabras.length - 1){
+
       let espacio=document.createElement("div");
       espacio.className="espacio";
+
       panel.appendChild(espacio);
     }
 
   });
+
+  // INTERROGACIÓN FINAL SIEMPRE VISIBLE
+  let interrogacionFinal=document.createElement("div");
+  interrogacionFinal.className="casilla visible";
+  interrogacionFinal.innerText="?";
+
+  panel.appendChild(interrogacionFinal);
+
 }
 
 function probarLetra(){
 
   let letra=document.getElementById("entradaLetra").value.toUpperCase();
+
   if(!letra) return;
 
   let casillas=document.getElementsByClassName("casilla");
@@ -140,25 +169,36 @@ function probarLetra(){
   let contador=0;
   let index=0;
 
+  // Empezamos en 1 porque la primera casilla es "¿"
   for(let i=0;i<fraseSecreta.length;i++){
+
     if(fraseSecreta[i]!=" "){
+
       if(fraseSecreta[i]==letra){
-        casillas[index].classList.add("visible");
+
+        casillas[index+1].classList.add("visible");
+
         contador++;
       }
+
       index++;
     }
   }
 
   if(contador>0){
+
     document.getElementById("mensaje").innerText=
       "La letra " + letra + " aparece " + contador + " veces";
-  } else {
+
+  }else{
+
     document.getElementById("mensaje").innerText=
       "La letra " + letra + " no está en la frase";
+
   }
 
   document.getElementById("entradaLetra").value="";
+
 }
 
 </script>
