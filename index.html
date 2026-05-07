@@ -98,7 +98,7 @@ button {
 let fraseSecreta="";
 
 function crearJuego(){
-  fraseSecreta=document.getElementById("entradaFrase").value.toUpperCase();
+  fraseSecreta="¿"+document.getElementById("entradaFrase").value.toUpperCase()+"?";
 
   let panel=document.getElementById("panelFrase");
   panel.innerHTML="";
